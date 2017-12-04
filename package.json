@@ -4,11 +4,9 @@
   "description": "testing fuzion-admin-api",
   "main": "index.js",
   "scripts": {
-    "mysql": "npm run-script mysql-setup && npm run-script mysql-docker && npm run-script start",
-    "mysql-setup": "rm -fr /Users/gdjenkins19/Sites/fuzion/sql_local && mkdir /Users/gdjenkins19/Sites/fuzion/sql_local",
-    "mysql-docker": "docker run -it --rm -v /Users/gdjenkins19/Sites/fuzion/sql_local:/var/lib/mysql -p 3306:3306 --name fuzion-mysql -e MYSQL_ROOT_PASSWORD=coffeetime -d mysql:5.7.20",
-    "start": "node ./node_modules/fuzion-api/bin/www",
-    "mysql-end": "docker stop fuzion-mysql"
+    "start": "node ./node_modules/fuzion-admin-api/bin/www",
+    "mysql-start": "docker run -it --rm -v lmysql:/var/lib/mysql -p 3306:3306 --name fuzion-mysql -e MYSQL_ROOT_PASSWORD=coffeetime -d mysql:5.7.20",
+    "mysql-end": "docker stop fuzion-mysql && docker volume rm lmysql"
   },
   "repository": {
     "type": "git",
@@ -21,6 +19,6 @@
   },
   "homepage": "https://github.com/gdjenkins19/gdj-fuzion-admin-api#readme",
   "dependencies": {
-    "fuzion-admin-api": "git+https://github.com/Klowd/fuzion-admin-api.git#dev"
+    "fuzion-admin-api": "git+https://github.com/Klowd/fuzion-admin-api.git#gdj_dev"
   }
 }

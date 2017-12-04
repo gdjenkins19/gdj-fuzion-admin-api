@@ -1,1 +1,17 @@
-    "execsql": "0.0.3",
+0. change
+    db_config.dev.json -> db_config.json
+    package.json: "name": "fuzion-api" -> "name": "fuzion-admin-api"
+1. docker run -it --rm -v lmysql:/var/lib/mysql -p 3306:3306 --name fuzion-mysql -e MYSQL_ROOT_PASSWORD=coffeetime -d mysql:5.7.20
+2. run in mysql: /Users/gdjenkins19/Sites/fuzion/gdj-fuzion-admin-api/old/test_ordered_uuid.sql
+2. npm install
+3. npm run-script start
+
+docker ps
+docker ps -al
+docker stop fuzion-mysql
+docker volume ls 
+docker volume rm lmysql
+
+???    "execsql": "0.0.3",
+
+
