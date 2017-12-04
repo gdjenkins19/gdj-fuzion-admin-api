@@ -2,13 +2,6 @@ create schema `fuzion-admin-api`;
 
 use `fuzion-admin-api`;
 
-DELIMITER //
-CREATE DEFINER=`root`@`localhost` FUNCTION `ordered_uuid`(uuid BINARY(36))
-RETURNS binary(16) DETERMINISTIC
-RETURN UNHEX(CONCAT(SUBSTR(uuid, 15, 4),SUBSTR(uuid, 10, 4),SUBSTR(uuid, 1, 8),SUBSTR(uuid, 20, 4),SUBSTR(uuid, 25)));
-//
-DELIMITER ;
-
 create table `show` (
 	`pk_id` int not null auto_increment,
 	`show_id` binary(16) not null,
@@ -17,6 +10,15 @@ create table `show` (
 	`active` tinyint not null default 0,
 	primary key (`pk_id`)
 );
+
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` 
+FUNCTION ordered_uuid(uuid BINARY(36))
+RETURNS binary(16) DETERMINISTIC
+BEGIN
+RETURN UNHEX(CONCAT(SUBSTR(uuid, 15, 4),SUBSTR(uuid, 10, 4),SUBSTR(uuid, 1, 8),SUBSTR(uuid, 20, 4),SUBSTR(uuid, 25)));
+END//
+DELIMITER ;
 
 insert into `show` (
 	`show_id`,
