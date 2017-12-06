@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/gdjenkins19/gdj-fuzion-admin-api#readme",
   "dependencies": {
-    "fuzion-admin-api": "git+https://github.com/Klowd/fuzion-admin-api.git#gdj_dev",
+    "fuzion-admin-api": "git+https://github.com/Klowd/fuzion-admin-api.git#dev",
     "optimist": "^0.6.1"
   }
 }
