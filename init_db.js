@@ -1,70 +1,91 @@
-// var execsql = require('execsql');
-// var sqlFile = "/Users/gdjenkins19/Sites/fuzion/gdj-fuzion-admin-api/old/test_ordered_uuid.sql";
-// var config = {
-//     "host": "localhost",
-//     "user": "root",
-//     "password": "coffeetime"
-// };
-
-// execsql.config(config).execFile(sqlFile, function(err, results){
-//     console.log(results);
-// }).end();
-
-
+var argv = require('optimist')
+    .usage('Usage: $0 -host [mysql_hostname] -user [mysql_user] -password [mysql_paswword] -file [absolute sql file path]')
+    .demand(['host','user','password','file'])
+    .argv;
 
 var mysql = require('mysql');
-var connection = mysql.createConnection({
-    "host": "localhost",
-    "user": "root",
-    "password": "coffeetime",
-    multipleStatements: true
-});
-
 var fs = require("fs");
-var sql;
 
-fs.readFile("./old/test_ordered_uuid.sql", "UTF8", function(err, sql) {
-    if (err) { throw err };
-    console.log(sql);
+var connection_params = {
+    host: argv.host,
+    user: argv.user,
+    password: argv.password,
+    multipleStatements: false
+};
 
-    connection.query(sql, function(err, results) {
-        if (err) throw err;
-      
-        // `results` is an array with one element for every statement in the query:
-        console.log(results[0]); // [create1]
-        console.log(results[1]); // [create2]
-        console.log(results[2]); // [select3]
-    });
+var text = fs.readFileSync(argv.file).toString();
+var lines = text.split("\n");
+
+lines = lines.filter(line => line.length > 0);
+
+var state = 0;
+var curr = '';
+var sep = '';
+var sqlArry = [];
+
+lines.forEach(function (line) {
+    switch (state) {
+        case 0:
+            if (line.search(/DELIMITER/) > -1) {
+                state = 2;
+            } else {
+                curr = curr + sep + line;
+                sep = ' ';
+                state = line.search(/\;/) === -1 ? 1 : 0;
+            }
+            break;
+        case 1:
+            curr = curr + sep + line;
+            state = (line.search(/\;/) === -1) ? 1 : 0;
+            break;
+        case 2:
+            curr = curr + sep + line;
+            sep = ' ';
+            if (line.search(/END/) > -1) {
+                curr = curr.replace(/END.*$/,'END');
+                state = 3;
+            }
+            break;
+        case 3:
+            state = (line.search(/DELIMITER/) > -1) ? 0 : 3;
+            break;
+    }
+    if (state === 0) {
+        sqlArry.push(curr);
+        curr = '';
+        sep = '';
+    }
 });
 
-// = "create schema `fuzion-admin-api`; \
-// use `fuzion-admin-api`; \
-// DELIMITER // \
-// CREATE DEFINER=`root`@`localhost` FUNCTION `ordered_uuid`(uuid BINARY(36)) \
-// RETURNS binary(16) DETERMINISTIC \
-// RETURN UNHEX(CONCAT(SUBSTR(uuid, 15, 4),SUBSTR(uuid, 10, 4),SUBSTR(uuid, 1, 8),SUBSTR(uuid, 20, 4),SUBSTR(uuid, 25))); \
-// // \
-// DELIMITER ; \
-// create table `show` ( \
-// 	`pk_id` int not null auto_increment, \
-// 	`show_id` binary(16) not null, \
-// 	`name` varchar(50) not null, \
-// 	`description` varchar(500), \
-// 	`active` tinyint not null default 0, \
-// 	primary key (`pk_id`) \
-// ); \
-// insert into `show` ( \
-// 	`show_id`, \
-// 	`name`, \
-// 	`description`, \
-// 	`active` \
-// ) \
-// values \
-// 	(ordered_uuid(uuid()), 'Test Show Uno', 'This is only a test...', 1), \
-// 	(ordered_uuid(uuid()), 'Test Show Dos', 'This is also a test...', 1), \
-// 	(ordered_uuid(uuid()), 'Test Show Tres', 'As is this one...', 1), \
-// 	(ordered_uuid(uuid()), 'Test Show Cuatro', 'You might have guessed by now.', 1); \
-// select hex(`show_id`) from `show`;";
+if (curr.length > 0) {
+    groups.push(curr);
+}
+
+sqlArry.forEach(function (item) {
+    console.log('SQL -> ' + item);
+});
 
 
-  
+runQueries(connection_params,sqlArry);
+
+function runQueries(params, sqlArray) {
+    var sql = sqlArray.shift();
+
+    console.log(`sql = ${sql}`);
+
+    var db = sql.match(/use \`(.+)\`\;/);
+    if (db) {
+        params.database = db[1];
+    } 
+
+    var conn = mysql.createConnection(params);
+
+    conn.query(sql, function(err, results) {
+        if (err) throw err;
+        conn.end();
+        
+        if (sqlArray.length > 0) {
+            runQueries(params, sqlArray);
+        }
+    });
+}
