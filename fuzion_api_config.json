@@ -1,0 +1,23 @@
+{
+    "www": {
+        "listeners": [
+            "./fuzion_listeners/on_error",
+            "./fuzion_listeners/on_listening"
+        ]
+    },
+    "app": {
+        "pre": [
+            "./fuzion_middleware/uow_complete",
+            "./fuzion_middleware/uow_per_request"
+        ],
+        "routes": [
+            "./fuzion_middleware/root",
+            "./fuzion_middleware/shows",
+            "../../routes/shows.js"
+        ],
+        "post": [
+            "./fuzion_middleware/not_found_error",
+            "./fuzion_middleware/error_page"
+        ]
+    }
+}

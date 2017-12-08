@@ -9,7 +9,7 @@
     "mysql-init": "node init_db.js --host localhost --user root --password coffeetime --file ./test_ordered_uuid.sql",
     "mysql-end": "docker stop fuzion-mysql && docker volume rm lmysql",
     "register": "node ./register.js",
-    "start": "node ./node_modules/fuzion-admin-api/bin/www"
+    "start": "node ./api.js"
   },
   "repository": {
     "type": "git",
