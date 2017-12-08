@@ -4,9 +4,9 @@
   "description": "testing fuzion-admin-api",
   "main": "index.js",
   "scripts": {
-    "build": "npm run-script mysql-start && sleep 10 && npm run-script mysql-init && npm run-script register && npm run-script start",
+    "build": "npm run-script mysql-start && sleep 10 && npm run-script mysql-init && npm run-script start",
     "mysql-start": "docker run -it --rm -v lmysql:/var/lib/mysql -p 3306:3306 --name fuzion-mysql -e MYSQL_ROOT_PASSWORD=coffeetime -d mysql:5.7.20",
-    "mysql-init": "node ./lib/db/init_db.js --host localhost --user root --password coffeetime --file /Users/gdjenkins19/Sites/fuzion/fuzion-db-scripts/01_FUZION_ADMIN/99_build_FuzionBadAss.sql",
+    "mysql-init": "node ./node_modules/fuzion-admin-api/lib/db/init_db.js --host localhost --user root --password coffeetime --file /Users/gdjenkins19/Sites/fuzion/fuzion-db-scripts/01_FUZION_ADMIN/99_build_FuzionBadAss.sql",
     "mysql-end": "docker stop fuzion-mysql && docker volume rm lmysql",
     "start": "node ./node_modules/fuzion-admin-api/api.js $PWD/fuzion_api_config.json"
   },
