@@ -13,7 +13,7 @@
         "routes": [
             "./middleware/router_root",
             "./middleware/router_shows",
-            "../../../lib/middleware/router_shows"
+            "../../../lib/middleware/router_alt_shows"
         ],
         "post": [
             "./middleware/error_not_found",
