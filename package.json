@@ -8,8 +8,7 @@
     "mysql-start": "docker run -it --rm -v lmysql:/var/lib/mysql -p 3306:3306 --name fuzion-mysql -e MYSQL_ROOT_PASSWORD=coffeetime -d mysql:5.7.20",
     "mysql-init": "node init_db.js --host localhost --user root --password coffeetime --file ./test_ordered_uuid.sql",
     "mysql-end": "docker stop fuzion-mysql && docker volume rm lmysql",
-    "register": "node ./register.js",
-    "start": "node ./api.js"
+    "start": "node ./node_modules/fuzion-admin-api/api.js $PWD/fuzion_api_config.json"
   },
   "repository": {
     "type": "git",

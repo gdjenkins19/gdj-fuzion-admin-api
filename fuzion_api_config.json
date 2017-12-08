@@ -1,23 +1,23 @@
 {
     "www": {
         "listeners": [
-            "./fuzion_listeners/on_error",
-            "./fuzion_listeners/on_listening"
+            "./middleware/listener_on_error",
+            "./middleware/listener_on_listening"
         ]
     },
     "app": {
         "pre": [
-            "./fuzion_middleware/uow_complete",
-            "./fuzion_middleware/uow_per_request"
+            "./middleware/mw_uow_complete",
+            "./middleware/mw_uow_per_request"
         ],
         "routes": [
-            "./fuzion_middleware/root",
-            "./fuzion_middleware/shows",
-            "../../routes/shows.js"
+            "./middleware/router_root",
+            "./middleware/router_shows",
+            "../../../lib/middleware/router_shows"
         ],
         "post": [
-            "./fuzion_middleware/not_found_error",
-            "./fuzion_middleware/error_page"
+            "./middleware/error_not_found",
+            "./middleware/error_page"
         ]
     }
 }
